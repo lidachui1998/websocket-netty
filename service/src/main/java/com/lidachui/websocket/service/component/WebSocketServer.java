@@ -1,6 +1,7 @@
 package com.lidachui.websocket.service.component;
 
 import com.lidachui.websocket.common.constants.ConnConstants;
+import com.lidachui.websocket.common.util.SpringUtil;
 import com.lidachui.websocket.manager.config.Caches;
 import com.lidachui.websocket.service.initializer.MyChannelInitializer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -30,8 +31,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Component
 public class WebSocketServer {
     @Resource
-    private Environment env;
-    @Resource
     private MyChannelInitializer myChannelInitializer;
     @Resource
     @Qualifier("websocketThreadPool")
@@ -48,7 +47,7 @@ public class WebSocketServer {
     private static final int BUFFER_SIZE = 592048;
 
     public void start() throws Exception {
-        int port = Integer.parseInt(env.getProperty("websocket.port"));
+        int port = Integer.parseInt(SpringUtil.getProperty("websocket.port"));
 
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
@@ -60,7 +59,6 @@ public class WebSocketServer {
                 .option(ChannelOption.SO_BACKLOG, MAXIMUM_QUEUE_WAITING)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(BUFFER_SIZE))
-                // 兩小時內沒有數據的通信時,TCP會自動發送一個活動探測數據報文
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(myChannelInitializer);
 

@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 @EnableAsync
 public class ThreadPoolConfig {
 
-
     @Bean(destroyMethod = "shutdown", name = "websocketThreadPool")
     public ThreadPoolExecutor websocketThreadPool() {
         ThreadFactory tf = new ThreadFactoryBuilder().setNameFormat(
