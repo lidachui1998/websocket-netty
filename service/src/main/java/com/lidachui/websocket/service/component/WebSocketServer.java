@@ -1,7 +1,6 @@
 package com.lidachui.websocket.service.component;
 
 import com.lidachui.websocket.common.constants.ConnConstants;
-import com.lidachui.websocket.common.util.SpringUtil;
 import com.lidachui.websocket.manager.config.Caches;
 import com.lidachui.websocket.service.initializer.MyChannelInitializer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -31,6 +30,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Component
 public class WebSocketServer {
     @Resource
+    private Environment env;
+    @Resource
     private MyChannelInitializer myChannelInitializer;
     @Resource
     @Qualifier("websocketThreadPool")
@@ -47,7 +48,7 @@ public class WebSocketServer {
     private static final int BUFFER_SIZE = 592048;
 
     public void start() throws Exception {
-        int port = Integer.parseInt(SpringUtil.getProperty("websocket.port"));
+        int port = Integer.parseInt(env.getProperty("websocket.port"));
 
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
