@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lidachui.websocket.dal.mapper.MessageMapper">
+
+    <resultMap id="BaseResultMap" type="com.lidachui.websocket.dal.model.WebSocketMessage">
+        <!--@Table -->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="messageId" column="message_id" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="header" column="header" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="sender" column="sender" jdbcType="VARCHAR"/>
+        <result property="isSend" column="is_send" jdbcType="VARCHAR"/>
+        <result property="receiver" column="receiver" jdbcType="VARCHAR"/>
+        <result property="sendTime" column="send_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+</mapper>
+

@@ -1,0 +1,5 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+com.lidachui.websocket.web.env.DatabaseEnvironmentPostProcessor
+org.springframework.context.ApplicationListener=\
+com.lidachui.websocket.web.env.support.PropertySourcesDatabaseHelper,\
+com.lidachui.websocket.web.env.support.Resources

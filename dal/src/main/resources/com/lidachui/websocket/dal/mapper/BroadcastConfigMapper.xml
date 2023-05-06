@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lidachui.websocket.dal.mapper.BroadcastConfigMapper">
+
+    <resultMap id="BaseResultMap" type="com.lidachui.websocket.dal.model.BroadcastConfig">
+        <!--@Table -->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="channel" column="channel" jdbcType="VARCHAR"/>
+        <result property="server" column="server" jdbcType="VARCHAR"/>
+        <result property="parameter" column="parameter" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="policy" column="policy" jdbcType="VARCHAR"/>
+        <result property="isEnable" column="is_enable" jdbcType="VARCHAR"/>
+        <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column">
+        `id`,`channel`,`server`,parameter,address,policy,create_user,create_time
+    </sql>
+
+    <select id="listConfig" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column"/>
+        FROM broadcast_config
+        WHERE
+        1 = 1
+        <if test="entity.id != null">AND id = #{entity.id}</if>
+        <if test="entity.channel != null and entity.channel != ''">AND channel = #{entity.channel}</if>
+        <if test="entity.server != null and entity.server != ''">AND server = #{entity.server}</if>
+        <if test="entity.parameter != null and entity.parameter != ''">AND parameter = #{entity.parameter}</if>
+        <if test="entity.address != null and entity.address != ''">AND address = #{entity.address}</if>
+        <if test="entity.policy != null and entity.policy != ''">AND policy = #{entity.policy}</if>
+        <if test="entity.isEnable != null and entity.isEnable != ''">AND is_enable = #{entity.isEnable}</if>
+        <if test="entity.createUser != null and entity.createUser != ''">AND create_user = #{entity.createUser}</if>
+        <if test="entity.createTime != null">AND create_time = #{entity.createTime}</if>
+    </select>
+
+    <select id="getConfig" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column"/>
+        FROM broadcast_config
+        WHERE
+        1 = 1
+        <if test="id != null">AND id = #{id}</if>
+        <if test="channel != null and channel != ''">AND channel = #{channel}</if>
+        <if test="server != null and server != ''">AND server = #{server}</if>
+        <if test="parameter != null and parameter != ''">AND parameter = #{parameter}</if>
+        <if test="address != null and address != ''">AND address = #{address}</if>
+        <if test="policy != null and policy != ''">AND policy = #{policy}</if>
+        <if test="entity.isEnable != null and entity.isEnable != ''">AND is_enable = #{entity.isEnable}</if>
+        <if test="createUser != null and createUser != ''">AND create_user = #{createUser}</if>
+        <if test="createTime != null">AND create_time = #{createTime}</if>
+        LIMIT 1
+    </select>
+</mapper>
+
