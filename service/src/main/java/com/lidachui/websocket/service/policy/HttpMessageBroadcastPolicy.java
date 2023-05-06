@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import com.lidachui.websocket.common.annotation.ReadBroadcastConfig;
 import com.lidachui.websocket.common.constants.CommonConstants;
+import com.lidachui.websocket.common.constants.MessageBroadcastPolicyType;
 import com.lidachui.websocket.common.constants.NumberConstants;
 import com.lidachui.websocket.common.result.Result;
 import com.lidachui.websocket.common.util.HttpClientUtil;
@@ -30,7 +31,7 @@ import java.util.*;
 @Service
 @Slf4j
 public class HttpMessageBroadcastPolicy extends AbstractMessageBroadcastPolicy {
-    @ReadBroadcastConfig(policy = "http")
+    @ReadBroadcastConfig(policy = MessageBroadcastPolicyType.HTTP)
     private final List<BroadcastConfig> configs;
 
     public HttpMessageBroadcastPolicy() {

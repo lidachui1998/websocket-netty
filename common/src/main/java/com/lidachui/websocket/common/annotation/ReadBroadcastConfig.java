@@ -1,6 +1,7 @@
 package com.lidachui.websocket.common.annotation;
 
 
+import com.lidachui.websocket.common.constants.MessageBroadcastPolicyType;
 import javax.validation.constraints.NotNull;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -18,5 +19,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ReadBroadcastConfig {
     @NotNull
-    String policy();
+    MessageBroadcastPolicyType policy();
 }

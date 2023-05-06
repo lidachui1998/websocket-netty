@@ -1,7 +1,7 @@
 package com.lidachui.websocket.service;
 
 
-import cn.hutool.core.text.CharSequenceUtil;
+
 import cn.hutool.core.util.StrUtil;
 import com.lidachui.websocket.common.constants.MessageBroadcastPolicyType;
 import com.lidachui.websocket.common.util.AsyncTaskUtil;

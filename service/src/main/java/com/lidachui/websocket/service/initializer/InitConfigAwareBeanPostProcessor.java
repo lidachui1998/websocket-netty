@@ -3,6 +3,7 @@ package com.lidachui.websocket.service.initializer;
 import cn.hutool.core.collection.CollUtil;
 import com.lidachui.websocket.common.annotation.ReadBroadcastConfig;
 import com.lidachui.websocket.common.constants.CommonConstants;
+import com.lidachui.websocket.common.constants.MessageBroadcastPolicyType;
 import com.lidachui.websocket.dal.model.BroadcastConfig;
 import com.lidachui.websocket.service.BroadcastConfigService;
 import com.lidachui.websocket.service.policy.AbstractMessageBroadcastPolicy;
@@ -40,9 +41,9 @@ public class InitConfigAwareBeanPostProcessor implements BeanPostProcessor {
             for (Field declaredField : declaredFields) {
                 if (declaredField.isAnnotationPresent(ReadBroadcastConfig.class)) {
                     ReadBroadcastConfig annotation = declaredField.getAnnotation(ReadBroadcastConfig.class);
-                    String policy = annotation.policy();
+                    MessageBroadcastPolicyType policy = annotation.policy();
                     BroadcastConfig policyQuery = BroadcastConfig.builder()
-                            .policy(policy.toLowerCase()).isEnable(CommonConstants.TRUE).build();
+                            .policy(policy.name().toLowerCase()).isEnable(CommonConstants.TRUE).build();
                     List<BroadcastConfig> configs = broadcastConfigService.listConfig(policyQuery);
                     if (CollUtil.isNotEmpty(configs)) {
                         declaredField.setAccessible(true);

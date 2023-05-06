@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import com.lidachui.websocket.common.annotation.ReadBroadcastConfig;
 import com.lidachui.websocket.common.constants.CommonConstants;
+import com.lidachui.websocket.common.constants.MessageBroadcastPolicyType;
 import com.lidachui.websocket.common.util.JsonUtils;
 import com.lidachui.websocket.common.util.SpringUtil;
 import com.lidachui.websocket.dal.model.BroadcastConfig;
@@ -30,7 +31,7 @@ import static com.lidachui.websocket.common.constants.CommonConstants.SUCCESS;
 @Slf4j
 public class RedisMessageBroadcastPolicy extends AbstractMessageBroadcastPolicy {
 
-    @ReadBroadcastConfig(policy = "redis")
+    @ReadBroadcastConfig(policy = MessageBroadcastPolicyType.REDIS)
     private final List<BroadcastConfig> configs;
 
     public RedisMessageBroadcastPolicy(List<BroadcastConfig> configs) {
