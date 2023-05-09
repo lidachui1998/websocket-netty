@@ -1,5 +1,6 @@
 package com.lidachui.websocket.manager.template;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,7 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @SINCE 2023/4/17 23:59
  */
 @Component
-public class RedisPubSubUtil {
+public class RedisPubSubUtil implements InitializingBean {
+
+    private static RedisPubSubUtil redisPubSubUtil;
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -39,8 +42,8 @@ public class RedisPubSubUtil {
      * @param channel 频道
      * @param message 消息内容
      */
-    public void publish(String channel, Object message) {
-        redisTemplate.convertAndSend(channel, message);
+    public static void publish(String channel, Object message) {
+        redisPubSubUtil.redisTemplate.convertAndSend(channel, message);
     }
 
     /**
@@ -49,9 +52,9 @@ public class RedisPubSubUtil {
      * @param listener 监听器
      * @param channels 频道列表
      */
-    public void subscribe(MessageListener listener, String... channels) {
-        if (!container.isRunning()) {
-            container.start();
+    public static void subscribe(MessageListener listener, String... channels) {
+        if (!redisPubSubUtil.container.isRunning()) {
+            redisPubSubUtil.container.start();
         }
         List<PatternTopic> list = new ArrayList<>();
         for (String channel : channels) {
@@ -59,8 +62,8 @@ public class RedisPubSubUtil {
             list.add(patternTopic);
         }
         PatternTopic[] topics = list.toArray(new PatternTopic[0]);
-        container.addMessageListener(listener, Arrays.asList(topics));
-        messageListenerMap.computeIfAbsent(listener, k -> new ArrayList<>()).addAll(Arrays.asList(channels));
+        redisPubSubUtil.container.addMessageListener(listener, new ArrayList<>(Arrays.asList(topics)));
+        redisPubSubUtil.messageListenerMap.computeIfAbsent(listener, k -> new ArrayList<>()).addAll(Arrays.asList(channels));
     }
 
     /**
@@ -68,15 +71,21 @@ public class RedisPubSubUtil {
      *
      * @param listener 监听器
      */
-    public void unsubscribe(MessageListener listener) {
-        if (messageListenerMap.containsKey(listener)) {
-            container.removeMessageListener(listener);
-            messageListenerMap.remove(listener);
+    public static void unsubscribe(MessageListener listener) {
+        if (redisPubSubUtil.messageListenerMap.containsKey(listener)) {
+            redisPubSubUtil.container.removeMessageListener(listener);
+            redisPubSubUtil.messageListenerMap.remove(listener);
         }
-        if (messageListenerMap.isEmpty() && container.isRunning()) {
-            container.stop();
+        if (redisPubSubUtil.messageListenerMap.isEmpty() && redisPubSubUtil.container.isRunning()) {
+            redisPubSubUtil.container.stop();
         }
     }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        redisPubSubUtil = this;
+    }
 }
+
 
 

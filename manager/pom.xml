@@ -11,6 +11,9 @@
 
     <artifactId>manager</artifactId>
 
+    <properties>
+        <hutool.version>5.4.3</hutool.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -31,7 +34,7 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.4.3</version>
+            <version>${hutool.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

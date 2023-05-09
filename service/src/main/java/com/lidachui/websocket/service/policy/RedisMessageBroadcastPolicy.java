@@ -48,13 +48,12 @@ public class RedisMessageBroadcastPolicy extends AbstractMessageBroadcastPolicy 
         if (CollUtil.isEmpty(configs)) {
             return;
         }
-        RedisPubSubUtil redisPubSubUtil = SpringUtil.getBean(RedisPubSubUtil.class);
         List<BroadcastMessage> broadcastMessages = Lists.newArrayList();
         for (BroadcastConfig config : configs) {
             log.info("渠道: {} 服务: {} 标题:{}", config.getChannel(), config.getServer(), broadcastMessage.getTitle());
             broadcastMessage.setServer(config.getServer());
             try {
-                Objects.requireNonNull(redisPubSubUtil).publish(config.getChannel(), broadcastMessage);
+                RedisPubSubUtil.publish(config.getChannel(), broadcastMessage);
                 broadcastMessage.setSendStatus(SUCCESS);
             } catch (Exception e) {
                 broadcastMessage.setSendStatus(FAIL);

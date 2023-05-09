@@ -8,6 +8,7 @@ import com.lidachui.websocket.common.util.LogExceptionUtil;
 import com.lidachui.websocket.common.util.SpringUtil;
 import com.lidachui.websocket.dal.model.WebSocketMessage;
 import com.lidachui.websocket.manager.config.Caches;
+import com.lidachui.websocket.service.BroadcastMessages;
 import com.lidachui.websocket.service.MessageService;
 import com.lidachui.websocket.service.config.WebsocketConfig;
 import com.lidachui.websocket.service.handler.message.MessageHandler;
@@ -24,6 +25,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+import static com.lidachui.websocket.common.constants.CommonConstants.NONE_STR;
 import static com.lidachui.websocket.common.constants.CommonConstants.TRUE;
 import static com.lidachui.websocket.common.constants.NumberConstants.*;
 
@@ -169,6 +171,7 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocke
      * 发送消息(提供给接口调用)
      */
     public void sendMessage(WebSocketMessage message) {
+        BroadcastMessages.broadcast(message,NONE_STR,NONE_STR,NONE_STR);
         // 如果接收者不为空，则发送给指定的用户
         if (StrUtil.isNotEmpty(message.getReceiver())) {
             MessageHandler messageHandler = MESSAGE_HANDLERS.get(message.getType());

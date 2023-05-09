@@ -83,7 +83,7 @@ public class HttpMessageBroadcastPolicy extends AbstractMessageBroadcastPolicy {
                 JsonUtils.convertToJsonString(broadcastMessage, BroadcastMessage::getContent, BroadcastMessage::setContent);
             }
             BroadcastMessageService broadcastMessageService = SpringUtil.getBean(BroadcastMessageService.class);
-            broadcastMessageService.saveList(broadcastMessages);
+            Objects.requireNonNull(broadcastMessageService).saveList(broadcastMessages);
         }
     }
 

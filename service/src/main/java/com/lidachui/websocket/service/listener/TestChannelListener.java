@@ -1,6 +1,5 @@
 package com.lidachui.websocket.service.listener;
 
-import com.lidachui.websocket.common.util.SpringUtil;
 import com.lidachui.websocket.manager.template.RedisPubSubUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
@@ -26,8 +25,7 @@ public class TestChannelListener implements MessageListener {
         // 在这里进行消息处理
         String result = "Hello, " + msg + "!";
         // 发送处理结果
-        RedisPubSubUtil redisPubSubUtil = SpringUtil.getBean(RedisPubSubUtil.class);
-        redisPubSubUtil.publish(channel + "-response", result);
+        RedisPubSubUtil.publish(channel + "-response", result);
     }
 
 }

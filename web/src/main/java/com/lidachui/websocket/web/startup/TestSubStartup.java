@@ -18,13 +18,12 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(1)
 public class TestSubStartup implements ApplicationRunner {
-    @Resource
-    private RedisPubSubUtil redisPubSubUtil;
+
     @Resource
     private TestChannelListener listener;
 
     @Override
     public void run(ApplicationArguments args) {
-        redisPubSubUtil.subscribe(listener, "test-channel");
+        RedisPubSubUtil.subscribe(listener, "test-channel");
     }
 }
