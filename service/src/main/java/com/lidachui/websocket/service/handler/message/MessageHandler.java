@@ -2,7 +2,7 @@ package com.lidachui.websocket.service.handler.message;
 
 import com.lidachui.websocket.dal.model.WebSocketMessage;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
+
 
 /**
  * MessageHandler

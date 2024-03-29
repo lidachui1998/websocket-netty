@@ -1,4 +1,4 @@
-package com.lidachui.websocket.service;
+package com.lidachui.websocket.service.impl;
 
 
 
@@ -18,11 +18,12 @@ import java.util.*;
 
 
 /**
- * BroadcastMessages
+ * 广播消息 BroadcastMessages
  *
  * @Author lihuijie
  * @Description:
  * @SINCE 2023/4/19 15:10
+ * @date 2023/06/19
  */
 @Component
 public class BroadcastMessages implements InitializingBean {

@@ -23,7 +23,8 @@ public enum ErrorCode implements IErrorCode {
     LOGIN_ERROR(101001, "你还未登陆,请及时登陆"),
     TOKEN_ERROR(101002, "登录凭证已过期，请重新登录"),
     VERIFICATION_FAILED(101003, "验证码发送失败,请您检查邮箱是否输入正确!"),
-    DATA_ALREADY_EXISTS(101004,"已存在该记录")
+    DATA_ALREADY_EXISTS(101004,"已存在该记录"),
+    TOKEN_EXPIRED(50000,"无效的token或已失效")
     ;
     private Integer code;
     private String msg;

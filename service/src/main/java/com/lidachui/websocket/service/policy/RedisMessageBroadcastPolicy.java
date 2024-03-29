@@ -7,6 +7,7 @@ import com.lidachui.websocket.common.annotation.ReadBroadcastConfig;
 import com.lidachui.websocket.common.constants.CommonConstants;
 import com.lidachui.websocket.common.constants.MessageBroadcastPolicyType;
 import com.lidachui.websocket.common.util.JsonUtils;
+import com.lidachui.websocket.common.util.LogExceptionUtil;
 import com.lidachui.websocket.common.util.SpringUtil;
 import com.lidachui.websocket.dal.model.BroadcastConfig;
 import com.lidachui.websocket.dal.model.BroadcastMessage;
@@ -51,16 +52,18 @@ public class RedisMessageBroadcastPolicy extends AbstractMessageBroadcastPolicy 
         List<BroadcastMessage> broadcastMessages = Lists.newArrayList();
         for (BroadcastConfig config : configs) {
             log.info("渠道: {} 服务: {} 标题:{}", config.getChannel(), config.getServer(), broadcastMessage.getTitle());
-            broadcastMessage.setServer(config.getServer());
+            broadcastMessage.setServer(config.getServer())
+                    .setChannel(config.getChannel());
             try {
                 RedisPubSubUtil.publish(config.getChannel(), broadcastMessage);
                 broadcastMessage.setSendStatus(SUCCESS);
             } catch (Exception e) {
-                broadcastMessage.setSendStatus(FAIL);
+                broadcastMessage.setSendStatus(FAIL)
+                        .setFailReason(LogExceptionUtil.getExceptionMessage(e));
             }
             broadcastMessages.add(broadcastMessage);
         }
-        saveBroadcastMessage(broadcastMessages);
+//        saveBroadcastMessage(broadcastMessages);
     }
 
     /**
@@ -69,7 +72,8 @@ public class RedisMessageBroadcastPolicy extends AbstractMessageBroadcastPolicy 
     private void saveBroadcastMessage(List<BroadcastMessage> broadcastMessages) {
         if (CollUtil.isNotEmpty(broadcastMessages)) {
             for (BroadcastMessage broadcastMessage : broadcastMessages) {
-                broadcastMessage.setCreateUser(StrUtil.isNotEmpty(broadcastMessage.getCreateUser()) ? broadcastMessage.getCreateUser() : CommonConstants.SYSTEM);
+                broadcastMessage.setCreateUser(StrUtil.isNotEmpty(broadcastMessage.getCreateUser()) ? broadcastMessage.getCreateUser() : CommonConstants.SYSTEM)
+                        .setPolicy(MessageBroadcastPolicyType.REDIS.name());
                 JsonUtils.convertToJsonString(broadcastMessage, BroadcastMessage::getContent, BroadcastMessage::setContent);
             }
             BroadcastMessageService broadcastMessageService = SpringUtil.getBean(BroadcastMessageService.class);

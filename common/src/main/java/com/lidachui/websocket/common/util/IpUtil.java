@@ -21,7 +21,7 @@ import java.net.URL;
 /**
  * 获取IP地址工具类
  */
-public class Iputil {
+public class IpUtil {
 
     /**
      * 1.通过request对象获取IP

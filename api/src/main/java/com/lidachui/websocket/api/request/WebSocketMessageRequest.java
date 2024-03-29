@@ -18,7 +18,7 @@ import java.util.*;
 @Data
 @Accessors(chain = true)
 @Table(name = "message")
-public class WebSocketMessageRequest {
+public class WebSocketMessageRequest<T> {
 
     /**
      * UUID，消息id
@@ -57,5 +57,10 @@ public class WebSocketMessageRequest {
      * 消息时间，存储日期时间类型
      */
     private Date sendTime;
+
+    /**
+     * 接收者列表
+     */
+    private List<String> receiverList;
 }
 

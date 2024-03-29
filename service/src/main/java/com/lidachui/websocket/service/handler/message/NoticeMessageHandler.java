@@ -1,9 +1,20 @@
 package com.lidachui.websocket.service.handler.message;
 
+import cn.hutool.core.collection.CollUtil;
 import com.lidachui.websocket.common.constants.MessageType;
+import com.lidachui.websocket.common.util.JsonUtils;
+import com.lidachui.websocket.common.util.ObjectUtil;
 import com.lidachui.websocket.dal.model.WebSocketMessage;
+import com.lidachui.websocket.service.config.WebsocketConfig;
 import io.netty.channel.Channel;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static com.lidachui.websocket.common.constants.CommonConstants.FALSE;
+import static com.lidachui.websocket.common.constants.CommonConstants.TRUE;
 
 /**
  * NoticeMessageHandler
@@ -27,6 +38,18 @@ public class NoticeMessageHandler implements MessageHandler {
      */
     @Override
     public void handleMessage(Channel channel, WebSocketMessage message) {
-        System.out.println("通知");
+        ConcurrentHashMap<Channel, String> userChannelMap = WebsocketConfig.getUserChannelMap();
+        List<Channel> receiverChannels = ObjectUtil.getKeysByValue(userChannelMap, message.getReceiver());
+        if (CollUtil.isNotEmpty(receiverChannels)){
+            for (Channel receiverChannel : receiverChannels) {
+                if (receiverChannel.isActive()){
+                    String sendMsg = JsonUtils.toJson(message);
+                    message.setIsSend(TRUE);
+                    receiverChannel.writeAndFlush(new TextWebSocketFrame(sendMsg));
+                }
+            }
+        }else {
+            message.setIsSend(FALSE);
+        }
     }
 }

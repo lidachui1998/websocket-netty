@@ -4,10 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lidachui.websocket.common.constants.NumberConstants;
+import com.lidachui.websocket.common.exception.BizException;
 
 import java.io.IOException;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+
+import static com.lidachui.websocket.common.constants.NumberConstants.NEGATIVE_ONE;
 
 /**
  * JsonUtils
@@ -49,7 +52,7 @@ public class JsonUtils {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new BizException(NEGATIVE_ONE,LogExceptionUtil.getExceptionMessage(e));
         }
     }
 

@@ -10,6 +10,8 @@
         <result property="server" column="server" jdbcType="VARCHAR"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="sendStatus" column="send_status" jdbcType="VARCHAR"/>
+        <result property="failReason" column="fail_reason" jdbcType="VARCHAR"/>
+        <result property="policy" column="policy" jdbcType="VARCHAR"/>
         <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>

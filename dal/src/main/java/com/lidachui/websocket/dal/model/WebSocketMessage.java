@@ -17,7 +17,7 @@ import java.util.*;
 @Data
 @Accessors(chain = true)
 @Table(name = "message")
-public class WebSocketMessage extends BaseEntity {
+public class WebSocketMessage<T> extends BaseEntity {
 
     /**
      * UUID，消息id

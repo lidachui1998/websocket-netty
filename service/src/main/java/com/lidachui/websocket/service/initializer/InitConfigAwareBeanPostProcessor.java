@@ -33,6 +33,14 @@ public class InitConfigAwareBeanPostProcessor implements BeanPostProcessor {
     private BroadcastConfigService broadcastConfigService;
 
 
+    /**
+     * 初始化后后期处理
+     *
+     * @param bean     豆
+     * @param beanName bean名称
+     * @return {@code Object}
+     * @throws BeansException beans异常
+     */
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof AbstractMessageBroadcastPolicy) {
@@ -43,7 +51,8 @@ public class InitConfigAwareBeanPostProcessor implements BeanPostProcessor {
                     ReadBroadcastConfig annotation = declaredField.getAnnotation(ReadBroadcastConfig.class);
                     MessageBroadcastPolicyType policy = annotation.policy();
                     BroadcastConfig policyQuery = BroadcastConfig.builder()
-                            .policy(policy.name().toLowerCase()).isEnable(CommonConstants.TRUE).build();
+                            .policy(policy.name().toLowerCase())
+                            .isEnable(CommonConstants.TRUE).build();
                     List<BroadcastConfig> configs = broadcastConfigService.listConfig(policyQuery);
                     if (CollUtil.isNotEmpty(configs)) {
                         declaredField.setAccessible(true);

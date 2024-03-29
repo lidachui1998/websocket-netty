@@ -2,7 +2,6 @@ package com.lidachui.websocket.service.handler;
 
 
 import com.lidachui.websocket.common.constants.ErrorCode;
-import com.lidachui.websocket.common.constants.NumberConstants;
 import com.lidachui.websocket.common.exception.BizException;
 import com.lidachui.websocket.common.result.Result;
 import com.lidachui.websocket.common.util.LogExceptionUtil;
@@ -30,9 +29,9 @@ public class GlobalExceptionHandler {
      * @return 返回自定义的结果对象
      */
     @ExceptionHandler(value = BizException.class)
-    public Result bizException(BizException e) {
+    public Result<String> bizException(BizException e) {
         log.info(LogExceptionUtil.getExceptionMessage(e));
-        return new Result(e.getCode(), e.getDetailMessage());
+        return new Result<>(e.getCode(), e.getDetailMessage());
     }
 
     /**
@@ -42,8 +41,8 @@ public class GlobalExceptionHandler {
      * @return 返回自定义的结果对象
      */
     @ExceptionHandler(value = Exception.class)
-    public Result generalException(Exception e) {
-        log.info(LogExceptionUtil.getExceptionMessage(e));
+    public Result<String> commonException(Exception e) {
+        log.error(LogExceptionUtil.getExceptionMessage(e));
         return Result.error(e.getMessage());
     }
 
@@ -54,7 +53,7 @@ public class GlobalExceptionHandler {
      * @return 返回自定义的结果对象
      */
     @ExceptionHandler(DuplicateKeyException.class)
-    public Result handleDuplicateKeyException(DuplicateKeyException e) {
+    public Result<String> handleDuplicateKeyException(DuplicateKeyException e) {
         log.info(LogExceptionUtil.getExceptionMessage(e));
         return Result.fail(ErrorCode.DATA_ALREADY_EXISTS);
     }
@@ -66,9 +65,9 @@ public class GlobalExceptionHandler {
      * @return 返回自定义的结果对象
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    public Result handleIllegalArgumentException(IllegalArgumentException e) {
+    public Result<String> handleIllegalArgumentException(IllegalArgumentException e) {
         log.info(LogExceptionUtil.getExceptionMessage(e));
-        return new Result(NumberConstants.NEGATIVE_ONE, e.getMessage());
+        return Result.error(e.getMessage());
     }
 }
 

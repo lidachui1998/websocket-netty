@@ -6,7 +6,6 @@ import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
-
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,7 +25,7 @@ public class WebsocketConfig {
     /**
      * 存放用户与Chanel的对应信息，用于给指定用户发送消息
      */
-    private static final ConcurrentHashMap<String, Channel> USER_CHANNEL_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Channel, String> USER_CHANNEL_MAP = new ConcurrentHashMap<>();
 
     private WebsocketConfig() {
     }
@@ -41,7 +40,7 @@ public class WebsocketConfig {
     /**
      * 获取用户channel map * @return
      */
-    public static ConcurrentHashMap<String, Channel> getUserChannelMap() {
+    public static ConcurrentHashMap<Channel, String> getUserChannelMap() {
         return USER_CHANNEL_MAP;
     }
 }

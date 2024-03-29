@@ -194,8 +194,8 @@
             <appender-ref ref="FATAL_FILE"/>
         </root>
     </springProfile>
-    <springProfile name="test,prod">
-        <root level="error">
+    <springProfile name="test,prd">
+        <root level="dev">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="TRACE_FILE"/>
             <appender-ref ref="DEBUG_FILE"/>

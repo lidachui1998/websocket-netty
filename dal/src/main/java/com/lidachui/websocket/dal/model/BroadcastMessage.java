@@ -52,6 +52,16 @@ public class BroadcastMessage<T> extends BaseEntity {
     private String sendStatus;
 
     /**
+     * 策略
+     */
+    private String policy;
+
+    /**
+     * 失败原因
+     */
+    private String failReason;
+
+    /**
      * 创建人
      */
     private String createUser;

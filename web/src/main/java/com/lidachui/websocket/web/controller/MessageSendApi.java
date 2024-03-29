@@ -6,10 +6,7 @@ import com.lidachui.websocket.common.result.Result;
 import com.lidachui.websocket.service.MessageSendService;
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -32,5 +29,11 @@ public class MessageSendApi {
     public Result<String> sendMessage(@RequestBody @Valid WebSocketMessageRequest request) {
         messageSendService.sendMessage(request);
         return Result.success("发送成功!");
+    }
+
+    @GetMapping("/remove")
+    public Result removeConnect(String userId){
+        messageSendService.remove(userId);
+        return Result.success("");
     }
 }

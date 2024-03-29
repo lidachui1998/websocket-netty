@@ -19,7 +19,7 @@ public final class Caches implements InitializingBean {
     private static Caches caches = null;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         caches = this;
     }
 

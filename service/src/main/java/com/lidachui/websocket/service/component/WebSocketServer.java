@@ -1,6 +1,7 @@
 package com.lidachui.websocket.service.component;
 
 import com.lidachui.websocket.common.constants.ConnConstants;
+import com.lidachui.websocket.common.util.LogExceptionUtil;
 import com.lidachui.websocket.manager.config.Caches;
 import com.lidachui.websocket.service.initializer.MyChannelInitializer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -90,7 +91,7 @@ public class WebSocketServer {
             try {
                 start();
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("websocket startup fail : %s", e.getMessage());
             }
         });
     }

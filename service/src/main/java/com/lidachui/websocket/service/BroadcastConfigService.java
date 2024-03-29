@@ -28,4 +28,9 @@ public interface BroadcastConfigService {
      * @return
      */
     BroadcastConfig getConfig(BroadcastConfig broadcastConfig);
+
+    /**
+     * 刷新配置
+     */
+    void refreshConfig();
 }

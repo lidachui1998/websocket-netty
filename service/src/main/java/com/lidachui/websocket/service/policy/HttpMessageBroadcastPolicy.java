@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.util.*;
 
+import static com.lidachui.websocket.common.constants.CommonConstants.NONE_STR;
+
 
 /**
  * HttpMessageBroadcastPolicy
@@ -34,8 +36,8 @@ public class HttpMessageBroadcastPolicy extends AbstractMessageBroadcastPolicy {
     @ReadBroadcastConfig(policy = MessageBroadcastPolicyType.HTTP)
     private final List<BroadcastConfig> configs;
 
-    public HttpMessageBroadcastPolicy() {
-        configs = null;
+    public HttpMessageBroadcastPolicy(List<BroadcastConfig> configs) {
+        this.configs = configs;
     }
 
     /**
@@ -52,7 +54,7 @@ public class HttpMessageBroadcastPolicy extends AbstractMessageBroadcastPolicy {
         for (BroadcastConfig config : configs) {
             sendBroadcastMessage(broadcastMessage, broadcastMessages, config);
         }
-        saveBroadcastMessage(broadcastMessages);
+//        saveBroadcastMessage(broadcastMessages);
     }
 
     /**
@@ -60,15 +62,20 @@ public class HttpMessageBroadcastPolicy extends AbstractMessageBroadcastPolicy {
      */
     private static void sendBroadcastMessage(BroadcastMessage broadcastMessage, List<BroadcastMessage> broadcastMessages, BroadcastConfig config) {
         log.info("服务: {} 标题:{} 地址:{}", config.getChannel(), config.getServer(), broadcastMessage.getTitle(), config.getAddress());
-        broadcastMessage.setServer(config.getServer());
+        broadcastMessage
+                .setChannel(NONE_STR)
+                .setServer(config.getServer())
+                .setPolicy(MessageBroadcastPolicyType.HTTP.name());
         try {
             String response = HttpClientUtil.doPost(new URI(config.getAddress()), HttpClientUtil.DEFAULT_HEADERS, JsonUtils.toJson(broadcastMessage));
             Result result = JsonUtils.fromJson(response, Result.class);
-            broadcastMessage.setSendStatus(result.getCode().equals(NumberConstants.ZERO) ? CommonConstants.SUCCESS : CommonConstants.FAIL);
+            broadcastMessage.setSendStatus(result.getCode().equals(NumberConstants.ZERO) ? CommonConstants.SUCCESS : CommonConstants.FAIL)
+                    .setFailReason(result.getCode().equals(NumberConstants.ZERO) ? null : result.getMsg());
             log.info(response);
         } catch (Exception e) {
             log.error(e.getMessage());
-            broadcastMessage.setSendStatus(CommonConstants.FAIL);
+            broadcastMessage.setSendStatus(CommonConstants.FAIL)
+                    .setFailReason(e.getMessage());
         }
         broadcastMessages.add(broadcastMessage);
     }

@@ -15,4 +15,12 @@ public interface MessageSendService {
      * @param request 请求
      */
     void sendMessage(WebSocketMessageRequest request);
+
+    /**
+     * 去除
+     *
+     * @param userId 用户id
+     */
+    void remove(String userId);
+
 }

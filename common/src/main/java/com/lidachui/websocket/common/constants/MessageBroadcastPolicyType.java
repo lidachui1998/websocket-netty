@@ -12,5 +12,6 @@ public enum MessageBroadcastPolicyType {
     REDIS, // redis策略
     RABBITMQ, // rabbitmq策略
     // 其他策略类型
+
 }
 
