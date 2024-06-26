@@ -1,20 +1,19 @@
 package com.lidachui.websocket.service.impl;
 
 
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import com.lidachui.websocket.common.constants.MessageBroadcastPolicyType;
 import com.lidachui.websocket.common.util.AsyncTaskUtil;
 import com.lidachui.websocket.common.util.SpringUtil;
 import com.lidachui.websocket.dal.model.BroadcastMessage;
 import com.lidachui.websocket.dal.model.WebSocketMessage;
-
 import com.lidachui.websocket.service.policy.AbstractMessageBroadcastPolicy;
 import com.lidachui.websocket.service.policy.MessageBroadCastFactory;
-import java.util.concurrent.CompletableFuture;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
 
 
 /**
@@ -28,12 +27,10 @@ import java.util.*;
 @Component
 public class BroadcastMessages implements InitializingBean {
 
-  private static BroadcastMessages broadcastMessages = null;
-
   public static void broadcast(WebSocketMessage message, String channel, String server,
       String title) {
     String property = SpringUtil.getProperty("broadcast.message.policy");
-    List<String> policyList = StrUtil.split(property, ',');
+    List<String> policyList = CharSequenceUtil.split(property, ',');
 
     MessageBroadCastFactory messageBroadCastFactory = SpringUtil.getBean(
         MessageBroadCastFactory.class);
@@ -42,7 +39,8 @@ public class BroadcastMessages implements InitializingBean {
         try {
           MessageBroadcastPolicyType messageBroadcastPolicyType = MessageBroadcastPolicyType.valueOf(
               policy.toUpperCase());
-          AbstractMessageBroadcastPolicy broadcastPolicy = messageBroadCastFactory.createPolicy(
+          AbstractMessageBroadcastPolicy broadcastPolicy = Objects.requireNonNull(
+              messageBroadCastFactory).createPolicy(
               messageBroadcastPolicyType);
           BroadcastMessage broadcastMessage = BroadcastMessage.builder()
               .channel(channel)
@@ -62,6 +60,6 @@ public class BroadcastMessages implements InitializingBean {
 
   @Override
   public void afterPropertiesSet() {
-    broadcastMessages = this;
+    // TODO document why this method is empty
   }
 }

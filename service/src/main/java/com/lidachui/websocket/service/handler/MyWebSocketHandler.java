@@ -1,6 +1,9 @@
 package com.lidachui.websocket.service.handler;
 
-import cn.hutool.core.util.StrUtil;
+import static com.lidachui.websocket.common.constants.CommonConstants.TRUE;
+import static com.lidachui.websocket.common.constants.NumberConstants.ONE;
+
+import cn.hutool.core.text.CharSequenceUtil;
 import com.lidachui.websocket.common.constants.CommonConstants;
 import com.lidachui.websocket.common.constants.ConnConstants;
 import com.lidachui.websocket.common.util.JsonUtils;
@@ -11,21 +14,22 @@ import com.lidachui.websocket.manager.config.Caches;
 import com.lidachui.websocket.service.MessageService;
 import com.lidachui.websocket.service.config.WebsocketConfig;
 import com.lidachui.websocket.service.handler.message.MessageHandler;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import java.net.URLDecoder;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-
-import java.net.URLDecoder;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
-
-import static com.lidachui.websocket.common.constants.CommonConstants.TRUE;
-import static com.lidachui.websocket.common.constants.NumberConstants.*;
 
 /**
  * MyWebSocketHandler
@@ -112,13 +116,13 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocke
                 }
             }
             log.info("HANDSHAKE_COMPLETE，ID->{}，URI->{}", channel.id().asLongText(), requestUri);
-            if (StrUtil.isNotEmpty(userId)) {
+            if (CharSequenceUtil.isNotEmpty(userId)) {
                 // 获取连接数
                 Integer connNum = Caches.get(ConnConstants.CONNECTION_NUM_PREFIX, Integer.class);
                 connNum = Objects.isNull(connNum) ? ONE : ++connNum;
                 Caches.set(ConnConstants.CONNECTION_NUM_PREFIX, connNum);
                 ConcurrentHashMap<Channel, String> userChannelMap = WebsocketConfig.getUserChannelMap();
-                userChannelMap.put(channel, userId);
+                userChannelMap.put(channel, Objects.requireNonNull(userId));
             } else {
                 channel.disconnect();
                 ctx.close();
@@ -151,12 +155,12 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocke
                 return;
             }
             WebSocketMessage webSocketMessage = JsonUtils.fromJson(msg, WebSocketMessage.class);
-            if (StrUtil.isNotEmpty(webSocketMessage.getMessageId())){
+            if (CharSequenceUtil.isNotEmpty(webSocketMessage.getMessageId())){
                 webSocketMessage.setSendTime(new Date());
             }else {
                 webSocketMessage.setSendTime(new Date()).setMessageId(UUIDGenerator.uuid());
             }
-            if (StrUtil.isNotEmpty(webSocketMessage.getType())) {
+            if (CharSequenceUtil.isNotEmpty(webSocketMessage.getType())) {
                 // 根据消息类型选择对应的消息处理器进行处理
                 MessageHandler handler = MESSAGE_HANDLERS.get(webSocketMessage.getType());
                 Objects.requireNonNull(handler);
@@ -201,7 +205,7 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocke
      */
     public void sendMessage(WebSocketMessage message) {
         // 如果接收者不为空，则发送给指定的用户
-        if (StrUtil.isNotEmpty(message.getReceiver())) {
+        if (CharSequenceUtil.isNotEmpty(message.getReceiver())) {
             MessageHandler messageHandler = MESSAGE_HANDLERS.get(message.getType());
             Objects.requireNonNull(messageHandler);
             messageHandler.handleMessage(null, message);

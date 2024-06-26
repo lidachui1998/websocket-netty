@@ -1,6 +1,6 @@
 package com.lidachui.websocket.service.listener;
 
-import com.lidachui.websocket.manager.template.RedisPubSubUtil;
+import com.lidachui.websocket.common.util.RedisPubSubUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;

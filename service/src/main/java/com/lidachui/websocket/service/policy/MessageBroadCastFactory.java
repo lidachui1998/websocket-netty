@@ -1,10 +1,9 @@
 package com.lidachui.websocket.service.policy;
 
 import com.lidachui.websocket.common.constants.MessageBroadcastPolicyType;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Map;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
 
 /**
  * MessageBroadCastFactory
@@ -16,9 +15,15 @@ import java.util.*;
 @Component
 public class MessageBroadCastFactory {
 
-    @Autowired
+    @Resource
     private Map<String, AbstractMessageBroadcastPolicy> policyMap;
 
+    /**
+     * 创造策略
+     *
+     * @param policyType 策略类型
+     * @return {@code AbstractMessageBroadcastPolicy }
+     */
     public AbstractMessageBroadcastPolicy createPolicy(MessageBroadcastPolicyType policyType) {
         String beanName = policyType.name().toLowerCase() + "MessageBroadcastPolicy";
         AbstractMessageBroadcastPolicy policy = policyMap.get(beanName);

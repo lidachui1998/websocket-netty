@@ -11,7 +11,7 @@ import com.lidachui.websocket.common.util.LogExceptionUtil;
 import com.lidachui.websocket.common.util.SpringUtil;
 import com.lidachui.websocket.dal.model.BroadcastConfig;
 import com.lidachui.websocket.dal.model.BroadcastMessage;
-import com.lidachui.websocket.manager.template.RedisPubSubUtil;
+import com.lidachui.websocket.common.util.RedisPubSubUtil;
 import com.lidachui.websocket.service.BroadcastMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

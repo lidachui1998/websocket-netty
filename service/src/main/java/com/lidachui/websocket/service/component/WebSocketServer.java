@@ -1,13 +1,16 @@
 package com.lidachui.websocket.service.component;
 
 import com.lidachui.websocket.common.constants.ConnConstants;
-import com.lidachui.websocket.common.util.LogExceptionUtil;
 import com.lidachui.websocket.manager.config.Caches;
 import com.lidachui.websocket.service.initializer.MyChannelInitializer;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
@@ -15,9 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
-
-import java.util.concurrent.ThreadPoolExecutor;
 
 
 /**

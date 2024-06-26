@@ -1,4 +1,4 @@
-package com.lidachui.websocket.manager.template;
+package com.lidachui.websocket.common.util;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;

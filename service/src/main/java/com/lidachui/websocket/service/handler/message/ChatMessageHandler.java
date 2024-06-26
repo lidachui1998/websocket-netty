@@ -1,23 +1,24 @@
 package com.lidachui.websocket.service.handler.message;
 
+import static com.lidachui.websocket.common.constants.CommonConstants.FALSE;
+import static com.lidachui.websocket.common.constants.CommonConstants.NONE_STR;
+import static com.lidachui.websocket.common.constants.MessageType.CHAT;
+
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import com.lidachui.websocket.common.constants.CommonConstants;
 import com.lidachui.websocket.common.util.JsonUtils;
 import com.lidachui.websocket.common.util.ObjectUtil;
 import com.lidachui.websocket.dal.model.WebSocketMessage;
-import com.lidachui.websocket.service.impl.BroadcastMessages;
 import com.lidachui.websocket.service.config.WebsocketConfig;
+import com.lidachui.websocket.service.impl.BroadcastMessages;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static com.lidachui.websocket.common.constants.CommonConstants.*;
-import static com.lidachui.websocket.common.constants.MessageType.CHAT;
 
 /**
  * ChatMessageHandler
@@ -42,19 +43,22 @@ public class ChatMessageHandler implements MessageHandler {
 
     /**
      * 处理消息
+     *
+     * @param channel 频道
+     * @param message 消息
      */
     @Override
     public void handleMessage(Channel channel, WebSocketMessage message) {
         ConcurrentHashMap<Channel, String> userChannelMap = WebsocketConfig.getUserChannelMap();
         String userId = null;
-        if (!Objects.isNull(channel)) {
+        if (Objects.nonNull(channel)) {
             userId = userChannelMap.get(channel);
         }
         String sendMsg = JsonUtils.toJson(message);
-        if (StrUtil.isEmpty(userId)) {
+        if (CharSequenceUtil.isEmpty(userId)) {
             message.setIsSend(FALSE);
             String receiver = message.getReceiver();
-            if (StrUtil.isNotEmpty(receiver)) {
+            if (CharSequenceUtil.isNotEmpty(receiver)) {
                 List<Channel> receiverChannels = getReceiverChannels(userChannelMap, receiver);
                 if (CollUtil.isNotEmpty(receiverChannels)) {
                     for (Channel receiverChannel : receiverChannels) {
@@ -70,13 +74,13 @@ public class ChatMessageHandler implements MessageHandler {
                 BroadcastMessages.broadcast(message, NONE_STR, NONE_STR, CHAT);
             }
         }
-        if (StrUtil.equals(userId, message.getSender())) {
+        if (CharSequenceUtil.equals(userId, message.getSender())) {
             String sender = message.getSender();
-            if (StrUtil.isNotEmpty(sender)) {
+            if (CharSequenceUtil.isNotEmpty(sender)) {
                 // 获取接收者用户名
                 String receiver = message.getReceiver();
                 // 如果接收者不为空，则发送给指定的用户
-                if (StrUtil.isNotEmpty(receiver)) {
+                if (CharSequenceUtil.isNotEmpty(receiver)) {
                     List<Channel> receiverChannels = getReceiverChannels(userChannelMap, receiver);
                     if (CollUtil.isNotEmpty(receiverChannels)) {
                         for (Channel receiverChannel : receiverChannels) {
