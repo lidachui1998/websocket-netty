@@ -51,7 +51,14 @@ public class MessageSendServiceImpl implements MessageSendService {
                 realSendMessage(webSocketMessage);
             }
         } else {
-            WebSocketMessage webSocketMessage = modelMapper.map(request, WebSocketMessage.class);
+            WebSocketMessage webSocketMessage =new WebSocketMessage<>();
+            webSocketMessage.setMessageId(request.getMessageId())
+                .setType(request.getType())
+                .setHeader(request.getHeader())
+                .setContent(request.getContent())
+                .setSender(request.getSender())
+                .setReceiver(request.getReceiver())
+                .setSendTime(request.getSendTime());
             realSendMessage(webSocketMessage);
         }
     }
