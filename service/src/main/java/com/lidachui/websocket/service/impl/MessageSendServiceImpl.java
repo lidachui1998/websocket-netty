@@ -5,7 +5,6 @@ import com.lidachui.websocket.api.request.WebSocketMessageRequest;
 import com.lidachui.websocket.common.util.ObjectUtil;
 import com.lidachui.websocket.common.util.UUIDGenerator;
 import com.lidachui.websocket.dal.model.WebSocketMessage;
-import com.lidachui.websocket.manager.client.DiaryClient;
 import com.lidachui.websocket.service.MessageSendService;
 import com.lidachui.websocket.service.MessageService;
 import com.lidachui.websocket.service.config.WebsocketConfig;
@@ -34,8 +33,6 @@ public class MessageSendServiceImpl implements MessageSendService {
     private MessageService messageService;
     @Resource
     private ModelMapper modelMapper;
-    @Resource
-    private DiaryClient diaryClient;
 
 
     /**

@@ -1,11 +1,8 @@
 package com.lidachui.websocket.web.task;
 
-import com.lidachui.websocket.common.result.Result;
-import com.lidachui.websocket.manager.client.DiaryClient;
 import com.lidachui.websocket.service.config.WebsocketConfig;
 import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;
-import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -26,8 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @Slf4j
 public class ClearInvalidConnect {
-    @Resource
-    private DiaryClient diaryClient;
 
     /**
      * 定时清除无效连接的任务
