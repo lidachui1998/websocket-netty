@@ -19,13 +19,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
+            <groupId>com.lidachui</groupId>
+            <artifactId>simple-request</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>com.dtflys.forest</groupId>
-            <artifactId>forest-spring-boot-starter</artifactId>
-            <version>1.5.33</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
         <dependency>
             <groupId>com.auth0</groupId>

@@ -28,7 +28,7 @@ public class TestSubStartup implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        RedisPubSubUtil.subscribe(listener, "test-channel");
-        RabbitMQUtils.addMessageListener("test_queue", mqListener);
+//        RedisPubSubUtil.subscribe(listener, "test-channel");
+//        RabbitMQUtils.addMessageListener("test_queue", mqListener);
     }
 }

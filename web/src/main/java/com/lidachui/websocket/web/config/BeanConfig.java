@@ -2,12 +2,10 @@ package com.lidachui.websocket.web.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.text.SimpleDateFormat;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-
-import java.text.SimpleDateFormat;
 
 /**
  * WebConfig

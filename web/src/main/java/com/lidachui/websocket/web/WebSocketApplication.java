@@ -1,7 +1,7 @@
 package com.lidachui.websocket.web;
 
 
-import com.dtflys.forest.springboot.annotation.ForestScan;
+import com.lidachui.simpleRequest.annotation.EnableRestClients;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -24,7 +24,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @SpringBootApplication
 @EnableCaching
 @EnableScheduling //第一种方式
-@ForestScan(basePackages = "com.lidachui.websocket.manager.client")
+@EnableRestClients(basePackages = "com.lidachui.websocket.manager.client")
 public class WebSocketApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {

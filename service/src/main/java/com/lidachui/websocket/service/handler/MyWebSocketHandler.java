@@ -5,19 +5,19 @@ import static com.lidachui.websocket.common.constants.NumberConstants.ONE;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import com.lidachui.websocket.common.constants.CommonConstants;
-import com.lidachui.websocket.common.constants.ConnConstants;
 import com.lidachui.websocket.common.util.JsonUtils;
 import com.lidachui.websocket.common.util.SpringUtil;
 import com.lidachui.websocket.common.util.UUIDGenerator;
 import com.lidachui.websocket.dal.model.WebSocketMessage;
-import com.lidachui.websocket.manager.config.Caches;
 import com.lidachui.websocket.service.MessageService;
 import com.lidachui.websocket.service.config.WebsocketConfig;
 import com.lidachui.websocket.service.handler.message.MessageHandler;
+import com.lidachui.websocket.service.manager.ConnectionManager;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import java.net.URLDecoder;
@@ -51,6 +51,12 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocke
     private final Map<String, MessageHandler> MESSAGE_HANDLERS = new HashMap<>();
 
     @Resource
+    private UserInfoExtractor userInfoExtractor;
+
+    @Resource
+    private ConnectionManager connectionManager;
+
+    @Resource
     public void setMessageHandlers(List<MessageHandler> messageHandlers) {
         // 使用 Spring 的依赖注入机制自动注入所有 MessageHandler 实现类，并将其注册到 MESSAGE_HANDLERS 映射表中
         for (MessageHandler handler : messageHandlers) {
@@ -65,9 +71,9 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocke
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
+        // 暂时只添加到channelGroup，用户信息在握手完成后处理
         WebsocketConfig.getChannelGroup().add(ctx.channel());
-        // 输出日志
-        log.info("与客户端建立连接，通道开启: " + ctx.channel().id());
+        log.debug("客户端TCP连接建立，等待WebSocket握手: {}", ctx.channel().id().asShortText());
     }
 
     /**
@@ -77,17 +83,9 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocke
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        WebsocketConfig.getChannelGroup().remove(ctx.channel());
-        WebsocketConfig.getUserChannelMap().remove(ctx.channel());
-        Integer connNum = Caches.get(ConnConstants.CONNECTION_NUM_PREFIX, Integer.class);
-        if (ONE.equals(connNum)) {
-            Caches.delete(ConnConstants.CONNECTION_NUM_PREFIX);
-        } else {
-            Caches.set(ConnConstants.CONNECTION_NUM_PREFIX, --connNum);
-        }
-        removeUser(ctx.channel());
-        // 输出日志
-        log.info("与客户端断开连接，通道关闭: " + ctx.channel().id());
+        // 移除连接（如果连接从未认证成功，removeConnection会安全处理）
+        connectionManager.removeConnection(ctx.channel());
+        log.debug("客户端连接断开: {}", ctx.channel().id().asShortText());
     }
 
     /**
@@ -103,32 +101,44 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocke
             Channel channel = ctx.channel();
             WebSocketServerProtocolHandler.HandshakeComplete handshakeComplete = (WebSocketServerProtocolHandler.HandshakeComplete) evt;
             String requestUri = handshakeComplete.requestUri();
-            requestUri = URLDecoder.decode(requestUri, "UTF-8");
-            String userId = null;
-            if (requestUri.contains(DATA_KEY)) {
-                userId = requestUri.substring(requestUri.lastIndexOf(DATA_KEY) + DATA_KEY.length());
-            } else {
-                String prefix = "/ws/";
-                int startIndex = requestUri.indexOf(prefix);
-                if (startIndex != -1) {
-                    startIndex += prefix.length();
-                    userId = requestUri.substring(startIndex);
-                }
-            }
+            HttpHeaders headers = handshakeComplete.requestHeaders();
+
             log.info("HANDSHAKE_COMPLETE，ID->{}，URI->{}", channel.id().asLongText(), requestUri);
+
+            // 使用用户信息提取器获取用户信息
+            Map<String, String> userInfo = userInfoExtractor.extractUserInfo(requestUri, headers);
+            String userId = userInfo.get("userId");
+            String source = userInfo.get("source");
+
             if (CharSequenceUtil.isNotEmpty(userId)) {
-                // 获取连接数
-                Integer connNum = Caches.get(ConnConstants.CONNECTION_NUM_PREFIX, Integer.class);
-                connNum = Objects.isNull(connNum) ? ONE : ++connNum;
-                Caches.set(ConnConstants.CONNECTION_NUM_PREFIX, connNum);
-                ConcurrentHashMap<Channel, String> userChannelMap = WebsocketConfig.getUserChannelMap();
-                userChannelMap.put(channel, Objects.requireNonNull(userId));
+                log.info("用户连接成功，userId: {}, 来源: {}, channelId: {}", userId, source, channel.id().asShortText());
+
+                // 使用连接管理器添加连接
+                connectionManager.addConnection(channel, userId);
+
+                // 可以在这里添加用户上线通知等逻辑
+                notifyUserOnline(userId, channel);
+
             } else {
+                log.warn("无法获取用户信息，断开连接，channelId: {}", channel.id().asShortText());
                 channel.disconnect();
                 ctx.close();
             }
         }
         super.userEventTriggered(ctx, evt);
+    }
+
+    /**
+     * 用户上线通知
+     */
+    private void notifyUserOnline(String userId, Channel channel) {
+        try {
+            // 这里可以添加用户上线的业务逻辑
+            // 比如：通知好友上线、更新在线状态等
+            log.debug("用户 {} 上线，channel: {}", userId, channel.id().asShortText());
+        } catch (Exception e) {
+            log.error("处理用户上线通知失败: {}", e.getMessage(), e);
+        }
     }
 
     /**

@@ -44,24 +44,28 @@ public class WebSocketServer {
 
     private ServerBootstrap serverBootstrap;
 
-    private static final int MAXIMUM_QUEUE_WAITING = 1024;
-
-    private static final int BUFFER_SIZE = 592048;
+    private static final int MAXIMUM_QUEUE_WAITING = 2048;
+    private static final int BUFFER_SIZE = 1024 * 1024; // 1MB
+    private static final int BOSS_THREADS = 1;
+    private static final int WORKER_THREADS = Runtime.getRuntime().availableProcessors() * 2;
 
     public void start() throws Exception {
         int port = Integer.parseInt(env.getProperty("websocket.port"));
 
-        this.bossGroup = new NioEventLoopGroup();
-        this.workerGroup = new NioEventLoopGroup();
+        this.bossGroup = new NioEventLoopGroup(BOSS_THREADS);
+        this.workerGroup = new NioEventLoopGroup(WORKER_THREADS);
         this.serverBootstrap = new ServerBootstrap();
 
         serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .localAddress(port)
                 .option(ChannelOption.SO_BACKLOG, MAXIMUM_QUEUE_WAITING)
+                .option(ChannelOption.SO_REUSEADDR, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(BUFFER_SIZE))
-                .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .childOption(ChannelOption.SO_SNDBUF, 32 * 1024)
+                .childOption(ChannelOption.SO_RCVBUF, 32 * 1024)
                 .childHandler(myChannelInitializer);
 
         ChannelFuture channelFuture = serverBootstrap.bind().sync();

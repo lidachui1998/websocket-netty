@@ -23,14 +23,17 @@ public class ThreadPoolConfig {
 
     @Bean(destroyMethod = "shutdown", name = "websocketThreadPool")
     public ThreadPoolExecutor websocketThreadPool() {
-        ThreadFactory tf = new ThreadFactoryBuilder().setNameFormat(
-                "websocketThreadPool-%d").build();
+        ThreadFactory tf = new ThreadFactoryBuilder()
+                .setNameFormat("websocket-pool-%d")
+                .setDaemon(true)
+                .build();
+        int corePoolSize = Runtime.getRuntime().availableProcessors();
         return new ThreadPoolExecutor(
-                Runtime.getRuntime().availableProcessors(),
-                Runtime.getRuntime().availableProcessors(),
-                200,
-                TimeUnit.MILLISECONDS,
-                new ArrayBlockingQueue<>(10),
+                corePoolSize,
+                corePoolSize * 2,
+                60L,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(1000),
                 tf,
                 new ThreadPoolExecutor.CallerRunsPolicy());
     }
